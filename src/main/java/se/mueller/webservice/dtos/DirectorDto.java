@@ -1,31 +1,20 @@
-package se.mueller.webservice.entities;
+package se.mueller.webservice.dtos;
 
-import javax.persistence.*;
+public class DirectorDto {
 
-@Entity
-@Table(name = "directors")
-public class Director {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String firstName;
     private String lastName;
     private String nationality;
     private String yearOfBirth;
 
-    public Director(Long id, String firstName, String lastName, String nationality, String yearOfBirth) {
+    public DirectorDto(Long id, String firstName, String lastName, String nationality, String yearOfBirth) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.nationality = nationality;
         this.yearOfBirth = yearOfBirth;
     }
-
-    public Director() {
-    }
-
 
     public Long getId() {
         return id;
