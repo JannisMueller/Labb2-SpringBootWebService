@@ -17,7 +17,7 @@ public class DirectorController {
 
     private final Service service;
 
-    public DirectorController(DirectorService service) {
+    public DirectorController(Service service) {
         this.service = service;
     }
 
