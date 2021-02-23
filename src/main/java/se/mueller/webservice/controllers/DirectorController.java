@@ -1,16 +1,23 @@
 package se.mueller.webservice.controllers;
 
+import org.apache.catalina.User;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import se.mueller.webservice.dtos.DirectorDto;
+import se.mueller.webservice.dtos.Directordto;
 import se.mueller.webservice.dtos.DirectorNationality;
-import se.mueller.webservice.services.DirectorService;
 import se.mueller.webservice.services.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 public class DirectorController {
@@ -22,12 +29,12 @@ public class DirectorController {
     }
 
     @GetMapping("/directors")
-    public List<DirectorDto> all(Long id) {
+    public List<Directordto> all(Long id) {
         return service.getAllDirectors();
     }
 
     @GetMapping("/directors/{id}")
-    public Optional <DirectorDto> getOne(@PathVariable Long id){
+    public Optional <Directordto> getOne(@PathVariable Long id){
 
         return Optional.ofNullable(service.getOne(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -37,7 +44,7 @@ public class DirectorController {
 
     @PostMapping("/directors")
     @ResponseStatus(HttpStatus.CREATED)
-    public DirectorDto create(@RequestBody DirectorDto directorDto) {
+    public Directordto create(@RequestBody Directordto directorDto) {
         return service.createDirector(directorDto);
     }
 
@@ -48,17 +55,25 @@ public class DirectorController {
     }
 
     @PutMapping("/directors/{id}")
-    public DirectorDto replace(@RequestBody DirectorDto directorDto, @PathVariable Long id) {
+    public Directordto replace(@RequestBody Directordto directorDto, @PathVariable Long id) {
         return service.replace(id, directorDto);
     }
 
     @PatchMapping("/directors/{id}")
-    public DirectorDto update(@RequestBody DirectorNationality nationality, @PathVariable Long id) {
+    public Directordto update(@RequestBody DirectorNationality nationality, @PathVariable Long id) {
         return service.update(id, nationality);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/directors/search")
+    public List<Directordto> search(@RequestParam(value = "firstName") String search) {
 
+        return service.findAllBySpec(search);
 
-
-
+    };
 }
+
+
+
+
+
+

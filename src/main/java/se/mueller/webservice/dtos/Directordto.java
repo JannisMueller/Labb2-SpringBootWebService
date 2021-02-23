@@ -1,6 +1,6 @@
 package se.mueller.webservice.dtos;
 
-public class DirectorDto {
+public class Directordto {
 
     private Long id;
     private String firstName;
@@ -8,7 +8,7 @@ public class DirectorDto {
     private String nationality;
     private String yearOfBirth;
 
-    public DirectorDto(Long id, String firstName, String lastName, String nationality, String yearOfBirth) {
+    public Directordto(Long id, String firstName, String lastName, String nationality, String yearOfBirth) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

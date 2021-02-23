@@ -3,12 +3,7 @@ package se.mueller.webservice.controllers;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import se.mueller.webservice.dtos.DirectorDto;
-import se.mueller.webservice.entities.Director;
-import se.mueller.webservice.repositories.DirectorRepository;
 import se.mueller.webservice.services.TestService;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

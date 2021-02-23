@@ -1,5 +1,6 @@
 package se.mueller.webservice.services;
-import se.mueller.webservice.dtos.DirectorDto;
+import org.springframework.data.jpa.domain.Specification;
+import se.mueller.webservice.dtos.Directordto;
 
 
 import org.springframework.http.HttpStatus;
@@ -7,7 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import se.mueller.webservice.dtos.DirectorNationality;
-import se.mueller.webservice.entities.Director;
+import se.mueller.webservice.entities.DirectorSpecifications;
+import se.mueller.webservice.entities.SearchCriteria;
 import se.mueller.webservice.mappers.DirectorMapper;
 import se.mueller.webservice.repositories.DirectorRepository;
 
@@ -26,17 +28,17 @@ public class DirectorService implements se.mueller.webservice.services.Service {
     }
 
     @Override
-    public List<DirectorDto> getAllDirectors() {
+    public List<Directordto> getAllDirectors() {
         return directorMapper.mapp(directorRepository.findAll());
     }
 
     @Override
-    public Optional<DirectorDto> getOne(Long id) {
+    public Optional<Directordto> getOne(Long id) {
         return directorMapper.mapp(directorRepository.findById(id));
     }
 
     @Override
-    public DirectorDto createDirector(DirectorDto directorDto) {
+    public Directordto createDirector(Directordto directorDto) {
         if (directorDto.getFirstName().isEmpty())
             throw new RuntimeException();
         return directorMapper.mapp(directorRepository.save(directorMapper.mapp(directorDto)));
@@ -49,11 +51,11 @@ public class DirectorService implements se.mueller.webservice.services.Service {
     }
 
     @Override
-    public DirectorDto replace(Long id, DirectorDto directorDto) {
-        Optional<Director> director = directorRepository.findById(id);
+    public Directordto replace(Long id, Directordto directorDto) {
+        Optional<se.mueller.webservice.entities.Director> director = directorRepository.findById(id);
         if (director.isPresent()) {
 
-            Director updatedDirector = director.get();
+            se.mueller.webservice.entities.Director updatedDirector = director.get();
             updatedDirector.setFirstName(directorDto.getFirstName());
             updatedDirector.setLastName(directorDto.getLastName());
             updatedDirector.setNationality(directorDto.getNationality());
@@ -67,17 +69,27 @@ public class DirectorService implements se.mueller.webservice.services.Service {
     }
 
     @Override
-    public DirectorDto update(Long id, DirectorNationality nationality) {
-        Optional<Director> director1 = directorRepository.findById(id);
+    public Directordto update(Long id, DirectorNationality nationality) {
+        Optional<se.mueller.webservice.entities.Director> director1 = directorRepository.findById(id);
         if (director1.isPresent()) {
 
-            Director updatedDirector = director1.get();
+            se.mueller.webservice.entities.Director updatedDirector = director1.get();
             if (nationality != null)
                 updatedDirector.setNationality(nationality.nationality);
                 return directorMapper.mapp(directorRepository.save(updatedDirector));
 
         } else
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,  "Id " + id + " not found.");
+    }
+
+    @Override
+    public List<Directordto> findAllBySpec(String search) {
+
+       DirectorSpecifications spec1 =
+             new DirectorSpecifications(new SearchCriteria("firstName",":",search));
+
+
+            return directorRepository.findAll(Specification.where(spec1));
     }
 
 
