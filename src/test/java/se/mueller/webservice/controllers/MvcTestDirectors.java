@@ -145,84 +145,87 @@ public class MvcTestDirectors {
     }
 
 
-//    @Test
-//    void replaceDirectorWithInValidIdViaPutAndGetBackResponseNotFound() throws Exception {
-//
-//        Director newDirector = new Director(1L, "TestFirstName1",
-//                "TestLastName1", "TestNationality1", "TestYear1");
-//
-//
-//        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(directorRepository.save(ArgumentMatchers.any(Director.class)));
-//
-//        mvc.perform(MockMvcRequestBuilders
-//                .put("/directors/1").content(asJsonString(newDirector)).contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isNotFound());
-//
-//    }
-//
-//    @Test
-//    void UpdateNationalityOfDirectorWithValidIdViaPatchAndGetBackResponseOK() throws Exception {
-//
-//        Directordto updatedDirector = new Directordto(1L, "TestFirstName1",
-//                "TestLastName1", "TestNationality_updated", "TestYear1");
-//
-//        DirectorNationality directorNationality = new DirectorNationality();
-//        DirectorMapper directorMapper = new DirectorMapper();
-//        DirectorService service = new DirectorService(directorRepository,directorMapper);
-//
-//        when(service.update(eq(1L), any(DirectorNationality.class))).thenReturn(updatedDirector);
-//
-//       mvc.perform(MockMvcRequestBuilders
-//                .patch("/directors/{id}",1)
-//                .content(asJsonString(updatedDirector))
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(updatedDirector.getFirstName()));
-//
-//    }
-//
-//    @Test
-//    void UpdateNationalityOfDirectorWithInValidIdViaPatchAndGetBackResponseNotFound() throws Exception {
-//
-//        when(directorRepository.save(any(Director.class)))
-//                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
-//
-//        mvc.perform(
-//                MockMvcRequestBuilders.patch("/directors/1"))
-//
-//                .andExpect(status().isNotFound());
-//
-//    }
-//
-//
-//    @Test
-//    void searchingForDirectorByFirstNameForExistingDirectorAndReturnRequestedDirectorAsList() throws Exception {
-//
-//        when(directorRepository.findAll(any(Specification.class))).thenReturn(List.of(
-//                new Director(1l,"Jannis","Mueller","german","1984")));
-//
-//        mvc.perform(
-//                MockMvcRequestBuilders.get("/directors/search?firstName=Jannis")
-//                        .accept(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk());
-//
-//    }
-//
-//    @Test
-//    void searchingForDirectorByFirstNameForNotExistingDirectorAndReturnRequestedDirectorAsList() throws Exception {
-//
-//        when(directorRepository.findAll(any(Specification.class)))
-//                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
-//
-//        mvc.perform(
-//                MockMvcRequestBuilders.get("/directors/search?firstName=Jannis"))
-//                .andExpect(status().isNotFound());
-//
-//    }
+    @Test
+    void replaceDirectorWithInValidIdViaPutAndGetBackResponseNotFound() throws Exception {
+
+        Director updatedDirector = new Director(1L, "TestFirstName1",
+                "TestLastName1", "TestNationality1", "TestYear1");
+
+        when(service.replace(anyLong(),any(Directordto.class)))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        mvc.perform(MockMvcRequestBuilders
+                .put("/directors/1")
+                .content(asJsonString(updatedDirector)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    void UpdateNationalityOfDirectorWithValidIdViaPatchAndGetBackResponseOK() throws Exception {
+
+        Directordto updatedDirector = new Directordto(1L, "TestFirstName1",
+                "TestLastName1", "TestNationality_updated", "TestYear1");
+
+
+        when(service.update(eq(1L), any(DirectorNationality.class))).thenReturn(updatedDirector);
+
+       mvc.perform(MockMvcRequestBuilders
+                .patch("/directors/{id}",1)
+                .content(asJsonString(updatedDirector))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(updatedDirector.getFirstName()));
+
+    }
+
+    @Test
+    void UpdateNationalityOfDirectorWithInValidIdViaPatchAndGetBackResponseNotFound() throws Exception {
+
+        Directordto updatedDirector = new Directordto(1L, "TestFirstName1",
+                "TestLastName1", "TestNationality_updated", "TestYear1");
+        when(service.update(anyLong(),any(DirectorNationality.class)))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        mvc.perform(
+                MockMvcRequestBuilders.patch("/directors/1")
+                .content(asJsonString(updatedDirector)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+    }
 //
 //
-//
+    @Test
+    void searchingForDirectorByFirstNameForExistingDirectorAndReturnRequestedDirectorAsList() throws Exception {
+
+        List list  = List.of(new Directordto(1l,"Jannis","Mueller","german","1984"));
+
+        when(service.findAllBySpec(anyString())).thenReturn(list);
+
+        mvc.perform(
+                MockMvcRequestBuilders.get("/directors/search?firstName=Jannis")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(list)).contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void searchingForDirectorByFirstNameForNotExistingDirectorAndReturnRequestedDirectorAsList() throws Exception {
+        List list  = List.of(new Directordto(1l,"Jannis","Mueller","german","1984"));
+
+        when(service.findAllBySpec(anyString()))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        mvc.perform(
+                MockMvcRequestBuilders.get("/directors/search?firstName=Jannis")
+                .content(asJsonString(list)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+
+    }
+
+
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
