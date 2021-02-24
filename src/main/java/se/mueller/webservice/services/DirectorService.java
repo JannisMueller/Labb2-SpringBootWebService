@@ -88,7 +88,6 @@ public class DirectorService implements se.mueller.webservice.services.Service {
        DirectorSpecifications spec1 =
              new DirectorSpecifications(new SearchCriteria("firstName",":",search));
 
-
             return directorRepository.findAll(Specification.where(spec1));
     }
 
