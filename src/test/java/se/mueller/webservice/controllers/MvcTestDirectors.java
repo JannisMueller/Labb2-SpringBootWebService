@@ -1,37 +1,25 @@
 package se.mueller.webservice.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.catalina.Service;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.server.ResponseStatusException;
 import se.mueller.webservice.dtos.DirectorNationality;
 import se.mueller.webservice.dtos.Directordto;
 import se.mueller.webservice.entities.Director;
-import se.mueller.webservice.mappers.DirectorMapper;
-import se.mueller.webservice.repositories.DirectorRepository;
 import se.mueller.webservice.services.DirectorService;
 
 import java.util.List;
 import java.util.Optional;
 
-
 import static org.mockito.Mockito.*;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -50,7 +38,7 @@ public class MvcTestDirectors {
     @Test
     void callingURLForOneDirectorsWithValidIdForExistingDirectorAndReturnRequestedDirectorAsJson() throws Exception {
 
-        when(service.getOne(1l)).thenReturn(Optional.of(new Directordto(1L, "TestFirstName1",
+        when(service.getOne(1L)).thenReturn(Optional.of(new Directordto(1L, "TestFirstName1",
                 "TestLastName1", "TestNationality1", "TestYear1")));
 
         mvc.perform(
@@ -62,7 +50,7 @@ public class MvcTestDirectors {
     @Test
     void callingURLForOneDirectorsWithInvalidIdAndReturn404Exception() throws Exception {
 
-        when(service.getOne(1l))
+        when(service.getOne(1L))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         mvc.perform(
@@ -87,8 +75,6 @@ public class MvcTestDirectors {
                         .accept(MediaType.APPLICATION_JSON)).
                 andExpect(status().isOk());
 
-
-
     }
 
     @Test
@@ -106,20 +92,17 @@ public class MvcTestDirectors {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(newDirector.getFirstName()));
-
     }
 
     @Test
-    void deleteDirectorWithValidIdAndReturnStatusOK() throws Exception
-    {
-
+    void deleteDirectorWithValidIdAndReturnStatusOK() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete("/directors/{id}", 1) )
                 .andExpect(status().isOk());
     }
 
     @Test
     void deleteDirectorWithInValidIdAndReturnStatusNotFound() throws Exception{
-        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(service).delete(1l);
+        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(service).delete(1L);
 
         mvc.perform(MockMvcRequestBuilders.delete("/directors/{id}", 1) )
                 .andExpect(status().isNotFound());
@@ -127,8 +110,6 @@ public class MvcTestDirectors {
 
     @Test
     void replaceDirectorWithValidIdViaPutAndGetBackResponseOK() throws Exception {
-
-
         Directordto updatedDirector = new Directordto(1L, "TestFirstName1",
                 "TestLastName1", "TestNationality1", "TestYear1");
 
@@ -141,13 +122,10 @@ public class MvcTestDirectors {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(updatedDirector.getFirstName()));
-
     }
-
 
     @Test
     void replaceDirectorWithInValidIdViaPutAndGetBackResponseNotFound() throws Exception {
-
         Director updatedDirector = new Director(1L, "TestFirstName1",
                 "TestLastName1", "TestNationality1", "TestYear1");
 
@@ -158,15 +136,12 @@ public class MvcTestDirectors {
                 .put("/directors/1")
                 .content(asJsonString(updatedDirector)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-
     }
 
     @Test
     void UpdateNationalityOfDirectorWithValidIdViaPatchAndGetBackResponseOK() throws Exception {
-
         Directordto updatedDirector = new Directordto(1L, "TestFirstName1",
                 "TestLastName1", "TestNationality_updated", "TestYear1");
-
 
         when(service.update(eq(1L), any(DirectorNationality.class))).thenReturn(updatedDirector);
 
@@ -177,14 +152,13 @@ public class MvcTestDirectors {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(updatedDirector.getFirstName()));
-
     }
 
     @Test
     void UpdateNationalityOfDirectorWithInValidIdViaPatchAndGetBackResponseNotFound() throws Exception {
-
         Directordto updatedDirector = new Directordto(1L, "TestFirstName1",
                 "TestLastName1", "TestNationality_updated", "TestYear1");
+
         when(service.update(anyLong(),any(DirectorNationality.class)))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -192,14 +166,12 @@ public class MvcTestDirectors {
                 MockMvcRequestBuilders.patch("/directors/1")
                 .content(asJsonString(updatedDirector)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-
     }
-//
-//
+
     @Test
     void searchingForDirectorByFirstNameForExistingDirectorAndReturnRequestedDirectorAsList() throws Exception {
 
-        List list  = List.of(new Directordto(1l,"Jannis","Mueller","german","1984"));
+        List list  = List.of(new Directordto(1L,"Jannis","Mueller","german","1984"));
 
         when(service.findAllBySpec(anyString())).thenReturn(list);
 
@@ -208,12 +180,11 @@ public class MvcTestDirectors {
                         .accept(MediaType.APPLICATION_JSON)
                         .content(asJsonString(list)).contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk());
-
     }
 
     @Test
     void searchingForDirectorByFirstNameForNotExistingDirectorAndReturnRequestedDirectorAsList() throws Exception {
-        List list  = List.of(new Directordto(1l,"Jannis","Mueller","german","1984"));
+        List list  = List.of(new Directordto(1L,"Jannis","Mueller","german","1984"));
 
         when(service.findAllBySpec(anyString()))
                 .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -222,7 +193,6 @@ public class MvcTestDirectors {
                 MockMvcRequestBuilders.get("/directors/search?firstName=Jannis")
                 .content(asJsonString(list)).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
-
     }
 
 
@@ -232,6 +202,5 @@ public class MvcTestDirectors {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 }
