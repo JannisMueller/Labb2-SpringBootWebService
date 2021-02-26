@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import se.mueller.webservice.dtos.DirectorNationality;
 import se.mueller.webservice.dtos.Directordto;
 import se.mueller.webservice.entities.Director;
-import se.mueller.webservice.services.DirectorService;
+import se.mueller.webservice.services.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +28,8 @@ public class MvcTestDirectors {
 
 
     @MockBean
-    DirectorService service;
-   // mocks database in order to test service and controller; one could test against an H2 databae
+    Service service;
+
 
 
     @Autowired
@@ -178,7 +178,8 @@ public class MvcTestDirectors {
         mvc.perform(
                 MockMvcRequestBuilders.get("/directors/search?firstName=Jannis")
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(list)).contentType(MediaType.APPLICATION_JSON))
+                        .content(asJsonString(list))
+                        .contentType(MediaType.APPLICATION_JSON))
                         .andExpect(status().isOk());
     }
 

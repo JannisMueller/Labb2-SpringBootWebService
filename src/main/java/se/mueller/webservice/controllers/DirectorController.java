@@ -12,14 +12,9 @@ import se.mueller.webservice.dtos.Directordto;
 import se.mueller.webservice.dtos.DirectorNationality;
 import se.mueller.webservice.services.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 @RestController
