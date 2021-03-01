@@ -71,7 +71,7 @@ public class DirectorController {
         return service.update(id, nationality);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/directors/search")
+    @RequestMapping(method = RequestMethod.GET, value = "/directors/search")//http://localhost:5050/directors/search?firstName=David
     public List<Directordto> search(@RequestParam(value = "firstName") String search) {
         log.info("Gets all Directors with name " + search);
 
