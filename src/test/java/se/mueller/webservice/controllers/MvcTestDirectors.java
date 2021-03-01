@@ -26,11 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(DirectorController.class)
 public class MvcTestDirectors {
 
-
     @MockBean
     Service service;
-
-
 
     @Autowired
     private MockMvc mvc;
